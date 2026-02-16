@@ -1,1 +1,186 @@
-//\n//  ConfettiView.swift\n//  KirchbergConfetti\n//\n//  Created by Kirill Kostarev on 12.06.2023.\n//\n\nimport UIKit\n\npublic final class ConfettiView: UIView {\n\n    // MARK: - Public Types\n\n    public enum Direction {\n        case left\n        case right\n        case top\n        case bottom\n    }\n\n    public enum Animation {\n        case `default`\n    }\n\n    // MARK: - Public Init\n\n    public init(\n        emitters: [ConfettiEmitter],\n        direction: Direction,\n        animation: Animation\n    ) {\n        self.emitters = emitters\n        self.direction = direction\n        self.animation = animation\n        super.init(frame: .zero)\n    }\n\n    required init?(coder: NSCoder) {\n        fatalError(\"init(coder:) has not been implemented\")\n    }\n\n    // MARK: - Public Methods\n\n    public override func willMove(toSuperview newSuperview: UIView?) {\n        guard let superview = newSuperview else { return }\n        frame = superview.bounds\n        isUserInteractionEnabled = false\n    }\n\n    public func emit() {\n        switch direction {\n        case .left:\n            emitLeft(emitters, animation: animation)\n        case .right:\n            emitRight(emitters, animation: animation)\n        case .top:\n            emitTop(emitters, animation: animation)\n        case .bottom:\n            emitBottom(emitters, animation: animation)\n        }\n    }\n\n    public func clear() {\n        layer.removeAllAnimations()\n        layer.sublayers?.forEach {\n            $0.removeAllAnimations()\n            $0.removeFromSuperlayer()\n        }\n    }\n\n    // MARK: - Private Properties\n\n    private let emitters: [ConfettiEmitter]\n    private let direction: Direction\n    private let animation: Animation\n\n    // MARK: - Private Methods\n\n    private func emitLeft(_ emitters: [ConfettiEmitter], animation: Animation) {\n        let confettiLayer = ConfettiLayer(emitters, .left)\n        configure(confettiLayer: confettiLayer, animation: animation)\n    }\n\n    private func emitRight(_ emitters: [ConfettiEmitter], animation: Animation) {\n        let confettiLayer = ConfettiLayer(emitters, .right)\n        configure(confettiLayer: confettiLayer, animation: animation)\n    }\n\n    private func emitTop(_ emitters: [ConfettiEmitter], animation: Animation) {\n        let confettiLayer = ConfettiLayer(emitters, .top)\n        configure(confettiLayer: confettiLayer, animation: animation)\n    }\n\n    private func emitBottom(_ emitters: [ConfettiEmitter], animation: Animation) {\n        let confettiLayer = ConfettiLayer(emitters, .bottom)\n        configure(confettiLayer: confettiLayer, animation: animation)\n    }\n\n    private func addGravityAnimation(to layer: CAEmitterLayer, emitters: [ConfettiEmitter]) {\n        let animation = CAKeyframeAnimation()\n        animation.duration = 4.0\n        animation.keyTimes = [0, 0.2, 0.4, 0.6, 1]\n        animation.values = [10, 20, 40, 80, 4000]\n        animation.timingFunction = CAMediaTimingFunction(name: .easeIn)\n\n        for emitter in emitters {\n            layer.add(animation, forKey: \"emitterCells.\\(emitter.id).yAcceleration\")\n        }\n    }\n\n    private func addBirthrateAnimation(to layer: CAEmitterLayer) {\n        let animation = CABasicAnimation()\n        animation.duration = 1\n        animation.fromValue = 1\n        animation.toValue = 0\n\n        layer.add(animation, forKey: \"birthRate\")\n        layer.birthRate = 0\n    }\n\n    private func configure(\n        confettiLayer: ConfettiLayer,\n        animation: Animation\n    ) {\n        confettiLayer.frame = self.bounds\n        confettiLayer.needsDisplayOnBoundsChange = true\n\n        layer.addSublayer(confettiLayer)\n\n        CATransaction.begin()\n        switch animation {\n        case .`default`:\n            addGravityAnimation(to: confettiLayer, emitters: emitters)\n            addBirthrateAnimation(to: confettiLayer)\n        }\n        CATransaction.commit()\n    }\n\n}\n\n// MARK: - Custom Styles\n\nextension ConfettiView {\n\n    public static let top = ConfettiView(\n        emitters: Static.defaultEmitters,\n        direction: .top,\n        animation: .default\n    )\n\n    public static let left = ConfettiView(\n        emitters: Static.defaultEmitters,\n        direction: .left,\n        animation: .default\n    )\n\n    public static let right = ConfettiView(\n        emitters: Static.defaultEmitters,\n        direction: .right,\n        animation: .default\n    )\n\n    public static let bottom = ConfettiView(\n        emitters: Static.defaultEmitters,\n        direction: .bottom,\n        animation: .default\n    )\n\n    private enum Static {\n        static let defaultEmitters: [ConfettiEmitter] = [\n            .shape(.rectangle, color: .systemRed),\n            .shape(.rectangle, color: .systemPink),\n            .shape(.rectangle, color: .systemYellow),\n            .shape(.rectangle, color: .systemTeal),\n            .shape(.rectangle, color: .systemBlue),\n            .shape(.circle, color: .systemGreen),\n            .shape(.circle, color: .systemRed),\n            .shape(.circle, color: .systemPink),\n            .shape(.circle, color: .systemYellow),\n            .shape(.circle, color: .systemTeal),\n            .shape(.circle, color: .systemBlue),\n            .shape(.circle, color: .systemGreen)\n        ]\n    }\n\n}\n"
+//
+//  ConfettiView.swift
+//  KirchbergConfetti
+//
+//  Created by Kirill Kostarev on 12.06.2023.
+//
+
+import UIKit
+
+public final class ConfettiView: UIView {
+
+    // MARK: - Public Types
+
+    public enum Direction {
+        case left
+        case right
+        case top
+        case bottom
+    }
+
+    public enum Animation {
+        case `default`
+    }
+
+    // MARK: - Public Init
+
+    public init(
+        emitters: [ConfettiEmitter],
+        direction: Direction,
+        animation: Animation
+    ) {
+        self.emitters = emitters
+        self.direction = direction
+        self.animation = animation
+        super.init(frame: .zero)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Public Methods
+
+    public override func willMove(toSuperview newSuperview: UIView?) {
+        guard let superview = newSuperview else { return }
+        frame = superview.bounds
+        isUserInteractionEnabled = false
+    }
+
+    public func emit() {
+        switch direction {
+        case .left:
+            emitLeft(emitters, animation: animation)
+        case .right:
+            emitLeft(emitters, animation: animation)
+        case .top:
+            emitTop(emitters, animation: animation)
+        case .bottom:
+            emitBottom(emitters, animation: animation)
+        }
+    }
+
+    public func clear() {
+        layer.removeAllAnimations()
+        layer.sublayers?.forEach {
+            $0.removeAllAnimations()
+            $0.removeFromSuperlayer()
+        }
+    }
+
+    // MARK: - Private Properties
+
+    private let emitters: [ConfettiEmitter]
+    private let direction: Direction
+    private let animation: Animation
+
+    // MARK: - Private Methods
+
+    private func emitLeft(_ emitters: [ConfettiEmitter], animation: Animation) {
+        let confettiLayer = ConfettiLayer(emitters, .left)
+        configure(confettiLayer: confettiLayer, animation: animation)
+    }
+
+    private func emitRight(_ emitters: [ConfettiEmitter], animation: Animation) {
+        let confettiLayer = ConfettiLayer(emitters, .right)
+        configure(confettiLayer: confettiLayer, animation: animation)
+    }
+
+    private func emitTop(_ emitters: [ConfettiEmitter], animation: Animation) {
+        let confettiLayer = ConfettiLayer(emitters, .top)
+        configure(confettiLayer: confettiLayer, animation: animation)
+    }
+
+    private func emitBottom(_ emitters: [ConfettiEmitter], animation: Animation) {
+        let confettiLayer = ConfettiLayer(emitters, .bottom)
+        configure(confettiLayer: confettiLayer, animation: animation)
+    }
+
+    private func addGravityAnimation(to layer: CAEmitterLayer, emitters: [ConfettiEmitter]) {
+        let animation = CAKeyframeAnimation()
+        animation.duration = 4.0
+        animation.keyTimes = [0, 0.2, 0.4, 0.6, 1]
+        animation.values = [10, 20, 40, 80, 4000]
+        animation.timingFunction = CAMediaTimingFunction(name: .easeIn)
+
+        for emitter in emitters {
+            layer.add(animation, forKey: "emitterCells.\(emitter.id).yAcceleration")
+        }
+    }
+
+    private func addBirthrateAnimation(to layer: CAEmitterLayer) {
+        let animation = CABasicAnimation()
+        animation.duration = 1
+        animation.fromValue = 1
+        animation.toValue = 0
+
+        layer.add(animation, forKey: "birthRate")
+        layer.birthRate = 0
+    }
+
+    private func configure(
+        confettiLayer: ConfettiLayer,
+        animation: Animation
+    ) {
+        confettiLayer.frame = self.bounds
+        confettiLayer.needsDisplayOnBoundsChange = true
+
+        layer.addSublayer(confettiLayer)
+
+        CATransaction.begin()
+        switch animation {
+        case .`default`:
+            addGravityAnimation(to: confettiLayer, emitters: emitters)
+            addBirthrateAnimation(to: confettiLayer)
+        }
+        CATransaction.commit()
+    }
+
+}
+
+// MARK: - Custom Styles
+
+extension ConfettiView {
+// View
+    public static let top = ConfettiView(
+        emitters: Static.defaultEmitters,
+        direction: .top,
+        animation: .default
+    )
+
+    public static let left = ConfettiView(
+        emitters: Static.defaultEmitters,
+        direction: .left,
+        animation: .default
+    )
+
+    public static let right = ConfettiView(
+        emitters: Static.defaultEmitters,
+        direction: .left,
+        animation: .default
+    )
+
+    public static let bottom = ConfettiView(
+        emitters: Static.defaultEmitters,
+        direction: .bottom,
+        animation: .default
+    )
+
+    private enum Static {
+        static let defaultEmitters: [ConfettiEmitter] = [
+            .shape(.rectangle, color: .systemRed),
+            .shape(.rectangle, color: .systemPink),
+            .shape(.rectangle, color: .systemYellow),
+            .shape(.rectangle, color: .systemTeal),
+            .shape(.rectangle, color: .systemBlue),
+            .shape(.circle, color: .systemGreen),
+            .shape(.circle, color: .systemRed),
+            .shape(.circle, color: .systemPink),
+            .shape(.circle, color: .systemYellow),
+            .shape(.circle, color: .systemTeal),
+            .shape(.circle, color: .systemBlue),
+            .shape(.circle, color: .systemGreen)
+        ]
+    }
+
+}
