@@ -1,0 +1,8 @@
+{
+  "files": [
+    {
+      "file": "KirchbergConfetti/Confetti/ConfettiView.swift",
+      "why": "Fixed direction handling bugs: .right case now correctly calls emitRight() instead of emitLeft(), static .right property now uses .right direction instead of .left, and removed unnecessary comment"
+    }
+  ]
+}
