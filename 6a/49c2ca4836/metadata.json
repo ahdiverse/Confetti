@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "6a49c2ca4836",
+  "strategy": "manual-commit",
+  "branch": "diffen/agent/24-1771289928",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "KirchbergConfetti/Confetti/ConfettiView.swift"
+  ],
+  "sessions": [
+    {
+      "metadata": "/6a/49c2ca4836/0/metadata.json",
+      "transcript": "/6a/49c2ca4836/0/full.jsonl",
+      "context": "/6a/49c2ca4836/0/context.md",
+      "content_hash": "/6a/49c2ca4836/0/content_hash.txt",
+      "prompt": "/6a/49c2ca4836/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 132,
+    "cache_creation_tokens": 15650,
+    "cache_read_tokens": 727985,
+    "output_tokens": 372,
+    "api_call_count": 30
+  }
+}

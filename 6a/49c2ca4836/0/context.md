@@ -1,0 +1,19 @@
+# Session Context
+
+## User Prompts
+
+### Prompt 1
+
+You are an AI coding agent working directly in this repository.
+
+Task:
+1. Use git and file tools to inspect the merge request changes on demand.
+2. Apply safe, high-confidence improvements only.
+3. Run tests if available and relevant.
+3.1 Run a basic lint and spell check.
+4. Commit meaningful grouped changes with a short WHY section.
+5. If no safe change is needed, do not force edits.
+6. Use Edit/MultiEdit for code updates. Never write escaped file content with literal "\n" tokens.
+
+Execution co...
+

@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "6a49c2ca4836",
+  "session_id": "0b694fe7-b834-46dd-b29b-9f29115293ae",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-17T01:01:15.367357509Z",
+  "branch": "diffen/agent/24-1771289928",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "KirchbergConfetti/Confetti/ConfettiView.swift"
+  ],
+  "agent": "Claude Code",
+  "token_usage": {
+    "input_tokens": 132,
+    "cache_creation_tokens": 15650,
+    "cache_read_tokens": 727985,
+    "output_tokens": 372,
+    "api_call_count": 30
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-17T01:01:15.318965996Z",
+    "agent_lines": 2,
+    "human_added": 84,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 86,
+    "agent_percentage": 2.3255813953488373
+  },
+  "transcript_path": ".claude/projects/-workspace/0b694fe7-b834-46dd-b29b-9f29115293ae.jsonl"
+}
