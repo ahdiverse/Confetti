@@ -52,7 +52,7 @@ public final class ConfettiView: UIView {
         case .left:
             emitLeft(emitters, animation: animation)
         case .right:
-            emitLeft(emitters, animation: animation)
+            emitRight(emitters, animation: animation)
         case .top:
             emitTop(emitters, animation: animation)
         case .bottom:
@@ -141,7 +141,6 @@ public final class ConfettiView: UIView {
 // MARK: - Custom Styles
 
 extension ConfettiView {
-// View
     public static let top = ConfettiView(
         emitters: Static.defaultEmitters,
         direction: .top,
@@ -156,7 +155,7 @@ extension ConfettiView {
 
     public static let right = ConfettiView(
         emitters: Static.defaultEmitters,
-        direction: .left,
+        direction: .right,
         animation: .default
     )
 
